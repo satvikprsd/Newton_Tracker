@@ -139,6 +139,7 @@ const mustReviseKeywords = [
   "Get Products",
   "Create Products data",
   "Delete Product",
+  "Update a product",
   
   // Prisma Schema & Models (5)
   "Manage schema - Prisma",

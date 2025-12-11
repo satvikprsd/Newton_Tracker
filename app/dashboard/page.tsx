@@ -40,9 +40,10 @@ export default function DashboardIndex() {
 			try {
 				setLoading(true)
 				setLoadingStep("Fetching user info...")
+				let userInfo = null
 				if (typeof window !== "undefined") {
 					const raw = localStorage.getItem("user-info")
-					if (raw) setUserInfo(JSON.parse(raw))
+					if (raw) userInfo = JSON.parse(raw)
 				}
 
 				const token = localStorage.getItem("auth-token")
@@ -57,6 +58,9 @@ export default function DashboardIndex() {
 					try {
 						localStorage.setItem("user-info", JSON.stringify(data))
 					} catch {}
+				}
+				else {
+					setUserInfo(userInfo)
 				}
 			} catch {
 				// ignore failures
