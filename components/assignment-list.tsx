@@ -38,7 +38,8 @@ export function AssignmentList({ assignments, semester }: AssignmentListProps) {
       </Card>
     )
   }
-
+  console.log(courseNames.join(", "));
+  console.log(Object.values(assignments).map((a)=> a.map((as)=> as.questionTitle)).flat().join(", "));
   return (
     <div className="space-y-8">
       {courseNames.map((courseName) => {

@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { LogOut, User, BookOpen, GraduationCap } from "lucide-react"
+import { LogOut, User, BookOpen, GraduationCap, ChevronLeft } from "lucide-react"
 import type { UserInfo, Course } from "@/lib/types"
 
 interface DashboardSidebarProps {
@@ -22,19 +22,30 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
   const handleLogout = () => {
     localStorage.removeItem("auth-token")
     localStorage.removeItem("semester-hash")
-    localStorage.removeItem("ada-courses")
     localStorage.removeItem("user-info")
-    localStorage.removeItem("adaAssignmentsCache")
+    localStorage.removeItem("ADA-courses")
+    localStorage.removeItem("AP-courses")
+    localStorage.removeItem("DBMS-courses")
+    localStorage.removeItem("assignmentsCache-ADA")
+    localStorage.removeItem("assignmentsCache-AP")
+    localStorage.removeItem("assignmentsCache-DBMS")
     router.push("/")
   }
 
   return (
     <aside className="w-80 bg-sidebar border-r border-sidebar-border p-4 flex flex-col gap-4 overflow-y-auto">
-      <Card className="bg-sidebar-accent border-sidebar-border">
-        <CardHeader className="pb-3">
+
+      <Card className="bg-sidebar-accent border-sidebar-border gap-3 py-4">
+        <CardHeader className="pb-1 ">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <User className="h-4 w-4" />
             Profile
+            <div className="pl-20">
+              <Button variant="ghost" onClick={() => router.push("/dashboard")} className="w-full justify-start">
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -59,8 +70,8 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
         </CardContent>
       </Card>
 
-      <Card className="bg-sidebar-accent border-sidebar-border gap-2">
-        <CardHeader className="pb-3">
+      <Card className="bg-sidebar-accent border-sidebar-border gap-2 py-4">
+        <CardHeader className="">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <GraduationCap className="h-4 w-4" />
             Current Semester
@@ -80,8 +91,8 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
         </CardContent>
       </Card>
 
-      <Card className="bg-sidebar-accent border-sidebar-border flex-1 max-h-fit">
-        <CardHeader className="pb-3">
+      <Card className="bg-sidebar-accent border-sidebar-border flex-1 max-h-fit py-4">
+        <CardHeader className="">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
             ADA Courses
