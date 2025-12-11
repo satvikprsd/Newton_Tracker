@@ -55,7 +55,13 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
       if (!data.hash) {
         throw new Error("No playground link available")
       }
-      const link = `https://my.newtonschool.co/playground/code/${data.hash}`
+      let link = ""
+      if (data.sub_type_text === "Newton Box") {
+        link = `https://my.newtonschool.co/playground/newton-box/${data.hash}`
+      }
+      else {
+        link = `https://my.newtonschool.co/playground/code/${data.hash}`
+      }
       setPlaygroundLink(link)
       window.open(link, "_blank")
     } catch (error) {
