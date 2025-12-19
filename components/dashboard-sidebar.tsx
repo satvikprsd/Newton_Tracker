@@ -11,12 +11,13 @@ import type { UserInfo, Course } from "@/lib/types"
 interface DashboardSidebarProps {
   userInfo: UserInfo | null
   semester: { hash: string; title: string } | null
-  adaCourses: Course[]
+  courses: Course[]
   showAllQuestions?: boolean
+  subjectName: string
   setShowAllQuestions?: (v: boolean) => void
 }
 
-export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuestions = false, setShowAllQuestions }: DashboardSidebarProps) {
+export function DashboardSidebar({ userInfo, semester, courses, subjectName, showAllQuestions = false, setShowAllQuestions }: DashboardSidebarProps) {
   const router = useRouter()
 
   const handleLogout = () => {
@@ -95,7 +96,7 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
         <CardHeader className="">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            ADA Courses
+            {subjectName} Courses
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -111,8 +112,8 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
               Show all questions
             </label>
           </div>
-          {adaCourses.length > 0 ? (
-            adaCourses.map((course) => (
+          {courses.length > 0 ? (
+            courses.map((course) => (
               <div key={course.hash} className="p-2 bg-background rounded-md">
                 <Badge variant="secondary" className="mb-1">
                   {course.shortName}
@@ -121,7 +122,7 @@ export function DashboardSidebar({ userInfo, semester, adaCourses, showAllQuesti
               </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No ADA courses found</p>
+            <p className="text-sm text-muted-foreground">No {subjectName} courses found</p>
           )}
         </CardContent>
       </Card>

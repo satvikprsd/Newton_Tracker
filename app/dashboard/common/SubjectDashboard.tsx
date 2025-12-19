@@ -271,7 +271,7 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
 
   return (
     <div className="min-h-screen bg-background flex">
-      <DashboardSidebar showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} adaCourses={courses} />
+      <DashboardSidebar showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} courses={courses} subjectName={subjectName} />
       <main className="flex-1 p-6 max-h-screen overflow-auto">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold text-foreground mb-6">{subjectName} Revision {Object.values(assignments).flat().length}</h1>
