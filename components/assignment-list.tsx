@@ -10,24 +10,12 @@ import { useState } from "react"
 interface AssignmentListProps {
   assignments: Record<string, Assignment[]>
   semester: { hash: string; title: string } | null
+  completed: Record<string, boolean>
+  setCompleted: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
 }
 
-export function AssignmentList({ assignments, semester }: AssignmentListProps) {
+export function AssignmentList({ assignments, semester, completed, setCompleted }: AssignmentListProps) {
   const courseNames = Object.keys(assignments)
-  const COMPLETED_STORAGE_KEY = "completedQuestions"
-  const [completed, setCompleted] = useState<Record<string, boolean>>({
-    ...(() => {
-      try {
-        if (typeof window === "undefined") return {}
-        const raw = localStorage.getItem(COMPLETED_STORAGE_KEY)
-        if (!raw) return {}
-        return JSON.parse(raw)
-      } catch {
-        return {}
-      }
-    })(),
-  })
-
   if (courseNames.length === 0) {
     return (
       <Card className="border-border">
@@ -51,6 +39,20 @@ export function AssignmentList({ assignments, semester }: AssignmentListProps) {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg text-foreground flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={completedCount === courseAssignments.length}
+                    onChange={() => setCompleted((prev => {
+                      const newCompleted = { ...prev }
+                      const allCompleted = completedCount === courseAssignments.length
+                      courseAssignments.forEach((assignment) => {
+                        newCompleted[assignment.questionHash] = !allCompleted
+                      })
+                      return newCompleted
+                    }))}
+                    aria-label="Mark question completed"
+                    className="h-4 w-4 shrink-0 accent-gray-800"
+                  />
                   {courseName}
                   <Badge variant="outline" className="ml-2">
                     {courseAssignments.length} questions

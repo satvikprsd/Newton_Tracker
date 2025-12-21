@@ -15,9 +15,14 @@ interface DashboardSidebarProps {
   showAllQuestions?: boolean
   subjectName: string
   setShowAllQuestions?: (v: boolean) => void
+  completed?: number
+  total?: number
+  assignments?: Record<string, any[]>
+  filteredAssignments?: Record<string, any[]>
+  setFilteredAssignments?: React.Dispatch<React.SetStateAction<Record<string, any[]>>>
 }
 
-export function DashboardSidebar({ userInfo, semester, courses, subjectName, showAllQuestions = false, setShowAllQuestions }: DashboardSidebarProps) {
+export function DashboardSidebar({ userInfo, semester, courses, subjectName, showAllQuestions = false, setShowAllQuestions, completed, total, assignments, filteredAssignments, setFilteredAssignments }: DashboardSidebarProps) {
   const router = useRouter()
 
   const handleLogout = () => {
@@ -37,7 +42,7 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
     <aside className="w-80 bg-sidebar border-r border-sidebar-border p-4 flex flex-col gap-4 overflow-y-auto">
 
       <Card className="bg-sidebar-accent border-sidebar-border gap-3 py-4">
-        <CardHeader className="pb-1 ">
+        <CardHeader className="">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <User className="h-4 w-4" />
             Profile
@@ -84,22 +89,56 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
               <code className="text-xs bg-background px-2 py-1 rounded text-muted-foreground font-mono block wrap-break-words line-clamp-2">
                 {semester.title}
               </code>
-              <code className="text-xs bg-background px-2 py-1 rounded text-muted-foreground font-mono block w-fit">
-                {semester.hash}
-              </code>
             </div>
           )}
         </CardContent>
       </Card>
 
-      <Card className="bg-sidebar-accent border-sidebar-border flex-1 max-h-fit py-4">
+      <Card className="gap-1">
+        <CardHeader className="pb-1 ">
+          <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
+            Search Questions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <input
+            type="text"
+            placeholder="Search by title"
+            className="w-full px-3 py-1 border border-sidebar-border rounded text-sidebar-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gray-500"
+            onChange={(e) => {
+              const query = e.target.value.toLowerCase()
+              if (setFilteredAssignments && assignments) {
+                if (query.trim() === "") {
+                  setFilteredAssignments(assignments)
+                } else {
+                  const newFiltered: Record<string, any[]> = {}
+                  Object.entries(assignments).forEach(([courseName, assignmentList]) => {
+                    const filteredList = assignmentList.filter((assignment) =>
+                      assignment.questionTitle.toLowerCase().includes(query)
+                    )
+                    if (filteredList.length > 0) {
+                      newFiltered[courseName] = filteredList
+                    }
+                  })
+                  setFilteredAssignments(newFiltered)
+                }
+              }
+            }}
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-sidebar-accent border-sidebar-border flex-1 max-h-fit py-4 gap-3">
         <CardHeader className="">
           <CardTitle className="text-sm font-medium text-sidebar-foreground flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
             {subjectName} Courses
           </CardTitle>
+          <Badge className="w-full mb-2 text-base" variant={completed === total ? "default" : "secondary"}>
+                  {completed}/{total} completed
+          </Badge>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-1">
           <div className="flex items-center gap-2 pb-2">
             <input
               id="show-all-questions"
@@ -114,11 +153,10 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
           </div>
           {courses.length > 0 ? (
             courses.map((course) => (
-              <div key={course.hash} className="p-2 bg-background rounded-md">
-                <Badge variant="secondary" className="mb-1">
+              <div key={course.hash} className="p-1 rounded-md">
+                <Badge variant="secondary" className="bg-background w-full text-sm py-1">
                   {course.shortName}
                 </Badge>
-                <p className="text-xs text-muted-foreground font-mono truncate">{course.hash}</p>
               </div>
             ))
           ) : (

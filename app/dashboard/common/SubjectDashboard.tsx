@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard-sidebar"
 import { AssignmentList } from "@/components/assignment-list"
@@ -27,7 +27,8 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
   const [loading, setLoading] = useState(true)
   const [loadingStep, setLoadingStep] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const [showAllQuestions, setShowAllQuestions] = useState<boolean>(false)
+  const [showAllQuestions, setShowAllQuestions] = useState<boolean>(false);
+  const [filteredAssignments, setFilteredAssignments] = useState<Record<string, Assignment[]>>({});
 
   const normalize = (s: string) =>
     s
@@ -266,16 +267,37 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
     loadDashboard()
   }, [router])
 
+  useEffect(() => {
+    setFilteredAssignments(assignments)
+  }, [assignments])
+
+    
+  const COMPLETED_STORAGE_KEY = "completedQuestions"
+  const [completed, setCompleted] = useState<Record<string, boolean>>({
+    ...(() => {
+      try {
+        if (typeof window === "undefined") return {}
+        const raw = localStorage.getItem(COMPLETED_STORAGE_KEY)
+        if (!raw) return {}
+        return JSON.parse(raw)
+      } catch {
+        return {}
+      }
+    })(),
+  })
+
+  const completedCount = Object.values(assignments).flat().filter((assignment) => completed[assignment.questionHash]).length
+  console.log("Completed Count:", completedCount);
   if (loading) return <LoadingState step={loadingStep} />
   if (error) return <ErrorState message={error} onRetry={loadDashboard} />
 
   return (
     <div className="min-h-screen bg-background flex">
-      <DashboardSidebar showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} courses={courses} subjectName={subjectName} />
+      <DashboardSidebar assignments={assignments} filteredAssignments={filteredAssignments} setFilteredAssignments={setFilteredAssignments} showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} courses={courses} subjectName={subjectName} completed={completedCount} total={Object.values(assignments).flat().length} />
       <main className="flex-1 p-6 max-h-screen overflow-auto">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold text-foreground mb-6">{subjectName} Revision {Object.values(assignments).flat().length}</h1>
-          <AssignmentList assignments={assignments} semester={semester} />
+          <h1 className="text-2xl font-bold text-foreground mb-6">{subjectName} Revision {Object.values(filteredAssignments).flat().length}</h1>
+          <AssignmentList assignments={filteredAssignments} semester={semester} completed={completed} setCompleted={setCompleted}/>
         </div>
       </main>
     </div>
