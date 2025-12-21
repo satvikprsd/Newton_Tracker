@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { LogOut, User, BookOpen, GraduationCap, ChevronLeft } from "lucide-react"
 import type { UserInfo, Course } from "@/lib/types"
+import { useEffect, useState } from "react"
 
 interface DashboardSidebarProps {
   userInfo: UserInfo | null
@@ -17,14 +18,18 @@ interface DashboardSidebarProps {
   setShowAllQuestions?: (v: boolean) => void
   completed?: number
   total?: number
+  allAssignments?: Record<string, any[]>
   assignments?: Record<string, any[]>
   filteredAssignments?: Record<string, any[]>
   setFilteredAssignments?: React.Dispatch<React.SetStateAction<Record<string, any[]>>>
+  mustReviseKeywords?: string[]
 }
 
-export function DashboardSidebar({ userInfo, semester, courses, subjectName, showAllQuestions = false, setShowAllQuestions, completed, total, assignments, filteredAssignments, setFilteredAssignments }: DashboardSidebarProps) {
+export function DashboardSidebar({ userInfo, semester, courses, subjectName, showAllQuestions = false, setShowAllQuestions, completed, total, allAssignments, assignments, filteredAssignments, setFilteredAssignments, mustReviseKeywords = [] }: DashboardSidebarProps) {
   const router = useRouter()
-
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState<string>("")
+  
   const handleLogout = () => {
     localStorage.removeItem("auth-token")
     localStorage.removeItem("semester-hash")
@@ -37,6 +42,55 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
     localStorage.removeItem("assignmentsCache-DBMS")
     router.push("/")
   }
+
+  useEffect(() => {
+    if (!setFilteredAssignments || !allAssignments) return
+
+    let result: Record<string, any[]> = { ...allAssignments }
+
+    //showAllQuestions filter
+    if (!showAllQuestions && mustReviseKeywords.length > 0) {
+      const kwNorm = mustReviseKeywords.map((k) => k.toLowerCase())
+      const mustReviseFiltered: Record<string, any[]> = {}
+      Object.entries(result).forEach(([groupName, assignmentList]) => {
+        const filteredList = assignmentList.filter((a) =>
+          kwNorm.some((kw) => (a.questionTitle || "").toLowerCase().includes(kw))
+        )
+        if (filteredList.length > 0) {
+          mustReviseFiltered[groupName] = filteredList
+        }
+      })
+      result = mustReviseFiltered
+    }
+
+    //course filter
+    if (selectedCourse) {
+      const courseFiltered: Record<string, any[]> = {}
+      Object.entries(result).forEach(([groupName, assignmentList]) => {
+        const filteredList = assignmentList.filter((assignment) => assignment.courseHash === selectedCourse)
+        if (filteredList.length > 0) {
+          courseFiltered[groupName] = filteredList
+        }
+      })
+      result = courseFiltered
+    }
+
+    //search query filter
+    if (searchQuery.trim() !== "") {
+      const searchFiltered: Record<string, any[]> = {}
+      Object.entries(result).forEach(([groupName, assignmentList]) => {
+        const filteredList = assignmentList.filter((assignment) =>
+          assignment.questionTitle.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        if (filteredList.length > 0) {
+          searchFiltered[groupName] = filteredList
+        }
+      })
+      result = searchFiltered
+    }
+
+    setFilteredAssignments(result)
+  }, [selectedCourse, searchQuery, allAssignments, setFilteredAssignments, showAllQuestions, mustReviseKeywords])
 
   return (
     <aside className="w-80 bg-sidebar border-r border-sidebar-border p-4 flex flex-col gap-4 overflow-y-auto">
@@ -104,26 +158,9 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
           <input
             type="text"
             placeholder="Search by title"
+            value={searchQuery}
             className="w-full px-3 py-1 border border-sidebar-border rounded text-sidebar-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gray-500"
-            onChange={(e) => {
-              const query = e.target.value.toLowerCase()
-              if (setFilteredAssignments && assignments) {
-                if (query.trim() === "") {
-                  setFilteredAssignments(assignments)
-                } else {
-                  const newFiltered: Record<string, any[]> = {}
-                  Object.entries(assignments).forEach(([courseName, assignmentList]) => {
-                    const filteredList = assignmentList.filter((assignment) =>
-                      assignment.questionTitle.toLowerCase().includes(query)
-                    )
-                    if (filteredList.length > 0) {
-                      newFiltered[courseName] = filteredList
-                    }
-                  })
-                  setFilteredAssignments(newFiltered)
-                }
-              }
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </CardContent>
       </Card>
@@ -154,7 +191,7 @@ export function DashboardSidebar({ userInfo, semester, courses, subjectName, sho
           {courses.length > 0 ? (
             courses.map((course) => (
               <div key={course.hash} className="p-1 rounded-md">
-                <Badge variant="secondary" className="bg-background w-full text-sm py-1">
+                <Badge onClick={() => course.hash === selectedCourse ? setSelectedCourse(null) : setSelectedCourse(course.hash)} variant="secondary" className={`bg-background w-full text-sm py-1 ${selectedCourse === course.hash ? "ring-2 ring-offset-2 ring-gray-500" : ""}`}>
                   {course.shortName}
                 </Badge>
               </div>

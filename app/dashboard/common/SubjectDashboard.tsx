@@ -240,23 +240,13 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
   }
 
   useEffect(() => {
-    // ensure assignments cache is kept when toggling filter
-    const filtered: Record<string, Assignment[]> = {}
-    if (showAllQuestions) Object.assign(filtered, allAssignments)
-    else {
-      const kwNorm = mustReviseKeywords.map((k) => k.toLowerCase())
-      for (const k of Object.keys(allAssignments)) {
-        const list = allAssignments[k].filter((a) => kwNorm.some((kw) => (a.questionTitle || "").toLowerCase().includes(kw)))
-        if (list.length > 0) filtered[k] = list
-      }
-    }
-    setAssignments(filtered)
+    // ensure assignments cache is kept
     try {
       if (typeof window !== "undefined" && Object.keys(allAssignments).length > 0) {
         localStorage.setItem(CACHE_KEY, JSON.stringify(allAssignments))
       }
     } catch {}
-  }, [showAllQuestions])
+  }, [allAssignments, CACHE_KEY])
 
   useEffect(() => {
     const token = localStorage.getItem("auth-token")
@@ -286,14 +276,12 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
     })(),
   })
 
-  const completedCount = Object.values(assignments).flat().filter((assignment) => completed[assignment.questionHash]).length
-  console.log("Completed Count:", completedCount);
   if (loading) return <LoadingState step={loadingStep} />
   if (error) return <ErrorState message={error} onRetry={loadDashboard} />
 
   return (
     <div className="min-h-screen bg-background flex">
-      <DashboardSidebar assignments={assignments} filteredAssignments={filteredAssignments} setFilteredAssignments={setFilteredAssignments} showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} courses={courses} subjectName={subjectName} completed={completedCount} total={Object.values(assignments).flat().length} />
+      <DashboardSidebar allAssignments={allAssignments} assignments={assignments} filteredAssignments={filteredAssignments} setFilteredAssignments={setFilteredAssignments} showAllQuestions={showAllQuestions} setShowAllQuestions={setShowAllQuestions} userInfo={userInfo} semester={semester} courses={courses} subjectName={subjectName} completed={Object.values(filteredAssignments).flat().filter((assignment) => completed[assignment.questionHash]).length} total={Object.values(filteredAssignments).flat().length} mustReviseKeywords={mustReviseKeywords} />
       <main className="flex-1 p-6 max-h-screen overflow-auto">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold text-foreground mb-6">{subjectName} Revision {Object.values(filteredAssignments).flat().length}</h1>

@@ -107,7 +107,7 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
             </Badge>
           )}
           {assignment.topics?.slice(0, 2).map((topic, index) => (
-            <Badge key={index} variant="secondary" className="text-xs">
+            <Badge key={index} variant="secondary" className="text-xs line-clamp-2 max-w-[100px]">
               {topic}
             </Badge>
           ))}
