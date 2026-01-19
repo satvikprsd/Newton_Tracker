@@ -23,11 +23,14 @@ export default function InternshipPage() {
   const [loadingStep, setLoadingStep] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  const [filterStatus, setFilterStatus] = useState<"all" | "open" | "applied">("all")
+  const [filterStatus, setFilterStatus] = useState<"all" | "open" | "applied" | "can_apply">("can_apply")
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null)
   const [skillsFilter, setSkillsFilter] = useState<string[]>([])
   const [minCtc, setMinCtc] = useState<string>("")
   const [maxCtc, setMaxCtc] = useState<string>("")
+  const [showApplyConfirm, setShowApplyConfirm] = useState(false)
+  const [applyingInternship, setApplyingInternship] = useState<Internship | null>(null)
+  const [applyLoading, setApplyLoading] = useState(false)
 
   // Fix salary human error: 10000000 (7 zeros) -> 10000 (4 zeros)
   const fixSalary = (value: number): number => {
@@ -126,7 +129,9 @@ export default function InternshipPage() {
     }
 
     // Apply status filter
-    if (filterStatus === "open") {
+    if (filterStatus === "can_apply") {
+      filtered = filtered.filter((i) => i.job_opening_course_mapping_user_status.can_apply)
+    } else if (filterStatus === "open") {
       filtered = filtered.filter((i) => i.job_opening_course_mapping_user_status.can_apply && !i.job_opening_course_mapping_user_status.has_applied)
     } else if (filterStatus === "applied") {
       filtered = filtered.filter((i) => i.job_opening_course_mapping_user_status.has_applied)
@@ -212,10 +217,74 @@ export default function InternshipPage() {
 
   const clearAllFilters = () => {
     setSearchQuery("")
-    setFilterStatus("all")
+    setFilterStatus("can_apply")
     setSkillsFilter([])
     setMinCtc("")
     setMaxCtc("")
+  }
+
+  const handleApplyClick = (internship: Internship, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation()
+    setApplyingInternship(internship)
+    setShowApplyConfirm(true)
+  }
+
+  const confirmApply = async () => {
+    if (!applyingInternship) return
+    
+    try {
+      setApplyLoading(true)
+      const coursesData = JSON.parse(localStorage.getItem("user-courses") || "[]")
+      const placementCourse = coursesData.find((c: { title: string }) => c.title.includes("Placement"))
+      const placementCourseHash = placementCourse ? placementCourse.hash : null
+      
+      await fetchWithAuth(
+        `https://my.newtonschool.co/api/v2/course/h/${placementCourseHash}/job_opening_course_mapping/h/${applyingInternship.hash}/apply/`,
+        { method: "POST" }
+      )
+      
+      // Update the internship status locally
+      const updatedInternships = internships.map((i) => {
+        if (i.hash === applyingInternship.hash) {
+          return {
+            ...i,
+            job_opening_course_mapping_user_status: {
+              ...i.job_opening_course_mapping_user_status,
+              has_applied: true,
+              can_apply: false,
+            },
+          }
+        }
+        return i
+      })
+      
+      setInternships(updatedInternships)
+      
+      // Also update selectedInternship if it's the same one
+      if (selectedInternship?.hash === applyingInternship.hash) {
+        setSelectedInternship({
+          ...selectedInternship,
+          job_opening_course_mapping_user_status: {
+            ...selectedInternship.job_opening_course_mapping_user_status,
+            has_applied: true,
+            can_apply: false,
+          },
+        })
+      }
+      
+      setShowApplyConfirm(false)
+      setApplyingInternship(null)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to apply"
+      alert(message)
+    } finally {
+      setApplyLoading(false)
+    }
+  }
+
+  const cancelApply = () => {
+    setShowApplyConfirm(false)
+    setApplyingInternship(null)
   }
 
   if (loading) return <LoadingState step={loadingStep} />
@@ -223,6 +292,29 @@ export default function InternshipPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Apply Confirmation Modal */}
+      {showApplyConfirm && applyingInternship && (
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4" onClick={cancelApply}>
+          <div 
+            className="bg-card border border-border rounded-xl max-w-md w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold text-foreground mb-2">Confirm Application</h2>
+            <p className="text-muted-foreground mb-4">
+              Are you sure you want to apply for <span className="font-medium text-foreground">{applyingInternship.job_opening.title}</span> at <span className="font-medium text-foreground">{applyingInternship.job_opening.company.title}</span>?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={cancelApply} disabled={applyLoading}>
+                No, Cancel
+              </Button>
+              <Button onClick={confirmApply} disabled={applyLoading}>
+                {applyLoading ? "Applying..." : "Yes, Apply"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Expanded View Modal */}
       {selectedInternship && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setSelectedInternship(null)}>
@@ -320,14 +412,29 @@ export default function InternshipPage() {
                     Job Description PDF
                   </Button>
                 )}
-                <Button
-                  variant="default"
-                  className="flex-1"
-                  onClick={() => window.open(`https://my.newtonschool.co/course/placement24/placement/job/${selectedInternship.job_opening.hash}`, "_blank")}
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Apply on Newton
-                </Button>
+                {selectedInternship.job_opening_course_mapping_user_status.has_applied ? (
+                  <Button variant="secondary" className="flex-1" disabled>
+                    Already Applied
+                  </Button>
+                ) : selectedInternship.job_opening_course_mapping_user_status.can_apply ? (
+                  <Button
+                    variant="default"
+                    className="flex-1"
+                    onClick={() => handleApplyClick(selectedInternship)}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Apply Now
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => window.open(`https://my.newtonschool.co/course/placement24/placement/job/${selectedInternship.job_opening.hash}`, "_blank")}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View on Portal
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -392,6 +499,13 @@ export default function InternshipPage() {
                 All
               </Button>
               <Button
+                variant={filterStatus === "can_apply" ? "default" : "outline"}
+                onClick={() => setFilterStatus("can_apply")}
+                size="sm"
+              >
+                Can Apply
+              </Button>
+              <Button
                 variant={filterStatus === "open" ? "default" : "outline"}
                 onClick={() => setFilterStatus("open")}
                 size="sm"
@@ -431,9 +545,9 @@ export default function InternshipPage() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
-                    <Briefcase className="h-4 w-4" />
-                    Skills
-                    <ChevronDown className="h-4 w-4" />
+                      <Briefcase className="h-4 w-4" />
+                      Skills
+                      <ChevronDown className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
 
@@ -458,7 +572,7 @@ export default function InternshipPage() {
             </DropdownMenu>
 
             {/* Clear Filters */}
-            {(searchQuery || filterStatus !== "all" || skillsFilter.length > 0 || minCtc || maxCtc) && (
+            {(searchQuery || filterStatus !== "can_apply" || skillsFilter.length > 0 || minCtc || maxCtc) && (
               <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-muted-foreground">
                 <X className="h-4 w-4 mr-1" />
                 Clear filters

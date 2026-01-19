@@ -1,8 +1,9 @@
-export const fetchWithAuth = async (url: string) => {
+export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem("auth-token")
     if (!token) throw new Error("No token found")
 
     const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`, {
+        ...options,
         headers: { Authorization: `Bearer ${token}` }
     });
 
