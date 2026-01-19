@@ -7,24 +7,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LoadingState } from "@/components/loading-state"
-import { LogOut, Briefcase, GraduationCap } from "lucide-react"
+import { LogOut, ChevronLeft } from "lucide-react"
 
-const sections = [
-	{ 
-		name: "Internship", 
-		href: "/dashboard/internship", 
-		description: "Browse and apply for internship opportunities",
-		icon: Briefcase
-	},
-	{ 
-		name: "Semesters", 
-		href: "/dashboard/semesters", 
-		description: "Access your semester-wise course materials",
-		icon: GraduationCap
-	},
+const subjects = [
+	{ name: "ADA", href: "/dashboard/semesters/sem3/ada", description: "Algorithms & Data Structures" },
+	{ name: "AP", href: "/dashboard/semesters/sem3/ap", description: "Advanced Programming" },
+	{ name: "DBMS", href: "/dashboard/semesters/sem3/dbms", description: "Database Management Systems" },
 ]
 
-export default function DashboardIndex() {
+export default function Sem3Page() {
 	const [userInfo, setUserInfo] = useState<any | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
 	const [loadingStep, setLoadingStep] = useState<string>("")
@@ -130,24 +121,26 @@ export default function DashboardIndex() {
 
 			<main className="p-6 w-full max-w-4xl">
 				<div className="mb-6">
-					<h1 className="text-3xl font-bold mb-1 text-foreground">Dashboard</h1>
-					<p className="text-sm text-muted-foreground">Select a section to continue.</p>
+					<Link 
+						href="/dashboard/semesters" 
+						className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
+					>
+						<ChevronLeft className="h-4 w-4 mr-1" />
+						Back to Semesters
+					</Link>
+					<h1 className="text-3xl font-bold mb-1 text-foreground">Semester 3</h1>
+					<p className="text-sm text-muted-foreground">Select a subject to open its revision dashboard.</p>
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-					{sections.map((s) => (
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					{subjects.map((s) => (
 						<Link
 							key={s.href}
 							href={s.href}
-							className="block p-8 bg-card border border-transparent hover:border-border rounded-lg transition-all shadow-sm hover:shadow-md"
+							className="block p-6 bg-card border border-transparent hover:border-border rounded-lg transition-shadow shadow-sm"
 						>
-							<div className="flex items-center gap-4 mb-3">
-								<div className="p-3 bg-primary/10 rounded-lg">
-									<s.icon className="h-8 w-8 text-primary" />
-								</div>
-								<h2 className="text-2xl font-semibold text-foreground">{s.name}</h2>
-							</div>
-							<p className="text-sm text-muted-foreground">{s.description}</p>
+							<h2 className="text-xl font-semibold text-foreground">{s.name}</h2>
+							<p className="mt-2 text-sm text-muted-foreground">{s.description}</p>
 						</Link>
 					))}
 				</div>

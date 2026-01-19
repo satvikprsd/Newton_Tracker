@@ -19,7 +19,8 @@ interface SubjectDashboardProps {
 
 export default function SubjectDashboard({ subjectName, courseTag, excludeCourse, topicOrder, mustReviseKeywords }: SubjectDashboardProps) {
   const router = useRouter()
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [coursesInfo, setCoursesInfo] = useState<any[]>([]);
   const [semester, setSemester] = useState<{ hash: string; title: string } | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
   const [allAssignments, setAllAssignments] = useState<Record<string, Assignment[]>>({})
@@ -48,6 +49,9 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
         try {
           const userCached = localStorage.getItem("user-info")
           if (userCached) setUserInfo(JSON.parse(userCached))
+          
+          const coursesCached = localStorage.getItem("user-courses")
+          if (coursesCached) setCoursesInfo(JSON.parse(coursesCached))
 
           const sem = localStorage.getItem("semester-info")
           if (sem) setSemester(JSON.parse(sem))
@@ -95,14 +99,21 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
       }
 
       setLoadingStep("Finding current semester...")
-      const coursesData = await fetchWithAuth(
-        "https://my.newtonschool.co/api/v2/course/all/applied/?pagination=false&completed=false",
-      )
-
+      let coursesData = coursesInfo
+      if (coursesData.length === 0) {
+        coursesData = await fetchWithAuth(
+          "https://my.newtonschool.co/api/v2/course/all/applied/?pagination=false&completed=false",
+        )
+        setCoursesInfo(coursesData)
+        try {
+          if (typeof window !== "undefined") localStorage.setItem("user-courses", JSON.stringify(coursesData))
+        } catch {}
+      }
       const currentCourse = coursesData.find((c: { title: string }) => c.title.includes("RU") && !c.title.includes("All Content"))
       const semesterCourse = currentCourse.children_courses.admin_unit_courses.find((c: { title: string }) => c.title.includes("Semester 3"))
       if (!semesterCourse) throw new Error("Could not find current semester course")
       const semObj = { hash: semesterCourse.hash, title: semesterCourse.title }
+      console.log(semesterCourse)
       setSemester(semObj)
       try {
         if (typeof window !== "undefined") localStorage.setItem("semester-info", JSON.stringify(semObj))

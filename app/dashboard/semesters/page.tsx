@@ -7,24 +7,18 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LoadingState } from "@/components/loading-state"
-import { LogOut, Briefcase, GraduationCap } from "lucide-react"
+import { LogOut, ChevronLeft, BookOpen } from "lucide-react"
 
-const sections = [
+const semesters = [
 	{ 
-		name: "Internship", 
-		href: "/dashboard/internship", 
-		description: "Browse and apply for internship opportunities",
-		icon: Briefcase
-	},
-	{ 
-		name: "Semesters", 
-		href: "/dashboard/semesters", 
-		description: "Access your semester-wise course materials",
-		icon: GraduationCap
+		name: "Semester 3", 
+		href: "/dashboard/semesters/sem3", 
+		description: "ADA, AP, DBMS",
+		subjects: 3
 	},
 ]
 
-export default function DashboardIndex() {
+export default function SemestersPage() {
 	const [userInfo, setUserInfo] = useState<any | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
 	const [loadingStep, setLoadingStep] = useState<string>("")
@@ -130,12 +124,19 @@ export default function DashboardIndex() {
 
 			<main className="p-6 w-full max-w-4xl">
 				<div className="mb-6">
-					<h1 className="text-3xl font-bold mb-1 text-foreground">Dashboard</h1>
-					<p className="text-sm text-muted-foreground">Select a section to continue.</p>
+					<Link 
+						href="/dashboard" 
+						className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
+					>
+						<ChevronLeft className="h-4 w-4 mr-1" />
+						Back to Dashboard
+					</Link>
+					<h1 className="text-3xl font-bold mb-1 text-foreground">Semesters</h1>
+					<p className="text-sm text-muted-foreground">Select a semester to view subjects.</p>
 				</div>
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-					{sections.map((s) => (
+					{semesters.map((s) => (
 						<Link
 							key={s.href}
 							href={s.href}
@@ -143,9 +144,12 @@ export default function DashboardIndex() {
 						>
 							<div className="flex items-center gap-4 mb-3">
 								<div className="p-3 bg-primary/10 rounded-lg">
-									<s.icon className="h-8 w-8 text-primary" />
+									<BookOpen className="h-8 w-8 text-primary" />
 								</div>
-								<h2 className="text-2xl font-semibold text-foreground">{s.name}</h2>
+								<div>
+									<h2 className="text-2xl font-semibold text-foreground">{s.name}</h2>
+									<p className="text-xs text-muted-foreground">{s.subjects} subjects</p>
+								</div>
 							</div>
 							<p className="text-sm text-muted-foreground">{s.description}</p>
 						</Link>
