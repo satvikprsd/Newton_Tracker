@@ -425,16 +425,7 @@ export default function InternshipPage() {
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Apply Now
                   </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => window.open(`https://my.newtonschool.co/course/placement24/placement/job/${selectedInternship.job_opening.hash}`, "_blank")}
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View on Portal
-                  </Button>
-                )}
+                ) : (<></>)}
               </div>
             </div>
           </div>
