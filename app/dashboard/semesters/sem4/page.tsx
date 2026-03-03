@@ -7,24 +7,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LoadingState } from "@/components/loading-state"
-import { LogOut, ChevronLeft, BookOpen } from "lucide-react"
+import { LogOut, ChevronLeft } from "lucide-react"
 
-const semesters = [
-	{ 
-		name: "Semester 3", 
-		href: "/dashboard/semesters/sem3", 
-		description: "ADA, AP, DBMS",
-		subjects: 3
-	},
-	{ 
-		name: "Semester 4", 
-		href: "/dashboard/semesters/sem4", 
-		description: "DVA, GenAI, SD",
-		subjects: 3
-	},
+const subjects = [
+	{ name: "DVA", href: "/dashboard/semesters/sem4/dva", description: "Data Visualization & Analytics" },
+	{ name: "GenAI", href: "/dashboard/semesters/sem4/genai", description: "Generative AI" },
+	{ name: "SD", href: "/dashboard/semesters/sem4/sd", description: "System Design" },
 ]
 
-export default function SemestersPage() {
+export default function Sem4Page() {
 	const [userInfo, setUserInfo] = useState<any | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
 	const [loadingStep, setLoadingStep] = useState<string>("")
@@ -34,12 +25,12 @@ export default function SemestersPage() {
         localStorage.removeItem("auth-token")
         localStorage.removeItem("semester-hash")
         localStorage.removeItem("user-info")
-        localStorage.removeItem("ADA-courses")
-        localStorage.removeItem("AP-courses")
-        localStorage.removeItem("DBMS-courses")
-        localStorage.removeItem("assignmentsCache-ADA")
-        localStorage.removeItem("assignmentsCache-AP")
-        localStorage.removeItem("assignmentsCache-DBMS")
+        localStorage.removeItem("DVA-courses")
+        localStorage.removeItem("GenAI-courses")
+        localStorage.removeItem("SD-courses")
+        localStorage.removeItem("assignmentsCache-DVA")
+        localStorage.removeItem("assignmentsCache-GenAI")
+        localStorage.removeItem("assignmentsCache-SD")
         router.push("/")
     }
 
@@ -131,33 +122,25 @@ export default function SemestersPage() {
 			<main className="p-6 w-full max-w-4xl">
 				<div className="mb-6">
 					<Link 
-						href="/dashboard" 
+						href="/dashboard/semesters" 
 						className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
 					>
 						<ChevronLeft className="h-4 w-4 mr-1" />
-						Back to Dashboard
+						Back to Semesters
 					</Link>
-					<h1 className="text-3xl font-bold mb-1 text-foreground">Semesters</h1>
-					<p className="text-sm text-muted-foreground">Select a semester to view subjects.</p>
+					<h1 className="text-3xl font-bold mb-1 text-foreground">Semester 4</h1>
+					<p className="text-sm text-muted-foreground">Select a subject to open its revision dashboard.</p>
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-					{semesters.map((s) => (
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					{subjects.map((s) => (
 						<Link
 							key={s.href}
 							href={s.href}
-							className="block p-8 bg-card border border-transparent hover:border-border rounded-lg transition-all shadow-sm hover:shadow-md"
+							className="block p-6 bg-card border border-transparent hover:border-border rounded-lg transition-shadow shadow-sm"
 						>
-							<div className="flex items-center gap-4 mb-3">
-								<div className="p-3 bg-primary/10 rounded-lg">
-									<BookOpen className="h-8 w-8 text-primary" />
-								</div>
-								<div>
-									<h2 className="text-2xl font-semibold text-foreground">{s.name}</h2>
-									<p className="text-xs text-muted-foreground">{s.subjects} subjects</p>
-								</div>
-							</div>
-							<p className="text-sm text-muted-foreground">{s.description}</p>
+							<h2 className="text-xl font-semibold text-foreground">{s.name}</h2>
+							<p className="mt-2 text-sm text-muted-foreground">{s.description}</p>
 						</Link>
 					))}
 				</div>

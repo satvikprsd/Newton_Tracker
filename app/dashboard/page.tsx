@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LoadingState } from "@/components/loading-state"
-import { LogOut, Briefcase, GraduationCap } from "lucide-react"
+import { LogOut, Briefcase, GraduationCap, Youtube } from "lucide-react"
 
 const sections = [
 	{ 
@@ -21,6 +21,12 @@ const sections = [
 		href: "/dashboard/semesters", 
 		description: "Access your semester-wise course materials",
 		icon: GraduationCap
+	},
+	{
+		name: "Study Material",
+		href: "/dashboard/study-material",
+		description: "Course-wise YouTube playlists and revision links",
+		icon: Youtube
 	},
 ]
 

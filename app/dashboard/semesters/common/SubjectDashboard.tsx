@@ -13,11 +13,12 @@ interface SubjectDashboardProps {
   subjectName: string
   courseTag: string
   excludeCourse?: string
+  semesterTitle?: string
   topicOrder: string[]
   mustReviseKeywords: string[]
 }
 
-export default function SubjectDashboard({ subjectName, courseTag, excludeCourse, topicOrder, mustReviseKeywords }: SubjectDashboardProps) {
+export default function SubjectDashboard({ subjectName, courseTag, excludeCourse, semesterTitle = "Semester 3", topicOrder, mustReviseKeywords }: SubjectDashboardProps) {
   const router = useRouter()
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [coursesInfo, setCoursesInfo] = useState<any[]>([]);
@@ -110,7 +111,7 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
         } catch {}
       }
       const currentCourse = coursesData.find((c: { title: string }) => c.title.includes("RU") && !c.title.includes("All Content"))
-      const semesterCourse = currentCourse.children_courses.admin_unit_courses.find((c: { title: string }) => c.title.includes("Semester 3"))
+      const semesterCourse = currentCourse.children_courses.admin_unit_courses.find((c: { title: string }) => c.title.includes(semesterTitle))
       if (!semesterCourse) throw new Error("Could not find current semester course")
       const semObj = { hash: semesterCourse.hash, title: semesterCourse.title }
       console.log(semesterCourse)
@@ -230,6 +231,7 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
       const kwNorm = mustReviseKeywords.map((k) => k.toLowerCase())
       const filteredAssignments: Record<string, Assignment[]> = {}
       if (showAllQuestions) Object.assign(filteredAssignments, orderedAssignments)
+      else if (kwNorm.length === 0) Object.assign(filteredAssignments, orderedAssignments)
       else {
         for (const k of keys) {
           const list = orderedAssignments[k].filter((a) => kwNorm.some((kw) => (a.questionTitle || "").toLowerCase().includes(kw)))

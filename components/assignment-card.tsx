@@ -62,6 +62,9 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
       else if (data.sub_type_text === "Git Hub View") {
         link = `https://my.newtonschool.co/playground/project/${data.hash}`
       }
+      else if (data.sub_type_text === "Spreadsheet View") {
+        link = `https://my.newtonschool.co/playground/spreadsheet/${data.hash}`
+      }
       else {
         link = `https://my.newtonschool.co/playground/code/${data.hash}`
       }

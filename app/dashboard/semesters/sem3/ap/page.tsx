@@ -1,4 +1,4 @@
-import SubjectDashboard from "../common/SubjectDashboard"
+import SubjectDashboard from "../../common/SubjectDashboard"
 
 const topicOrder = [
   // Foundation - Web & HTTP Basics
