@@ -31,6 +31,17 @@ export interface Assignment {
   courseName: string
 }
 
+export interface FavoriteQuestion {
+  course_hash: string
+  assignmentHash: string
+  assignmenstHash: string
+  questionHash: string
+  question_name: string
+  difficulty: string
+  topics: string[]
+  courseName?: string
+}
+
 export interface InternshipCompany {
   slug: string
   title: string

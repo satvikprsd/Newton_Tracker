@@ -12,9 +12,10 @@ interface AssignmentListProps {
   semester: { hash: string; title: string } | null
   completed: Record<string, boolean>
   setCompleted: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+  showCompletion?: boolean
 }
 
-export function AssignmentList({ assignments, semester, completed, setCompleted }: AssignmentListProps) {
+export function AssignmentList({ assignments, semester, completed, setCompleted, showCompletion = true }: AssignmentListProps) {
   const courseNames = Object.keys(assignments)
   if (courseNames.length === 0) {
     return (
@@ -39,28 +40,32 @@ export function AssignmentList({ assignments, semester, completed, setCompleted 
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg text-foreground flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={completedCount === courseAssignments.length}
-                    onChange={() => setCompleted((prev => {
-                      const newCompleted = { ...prev }
-                      const allCompleted = completedCount === courseAssignments.length
-                      courseAssignments.forEach((assignment) => {
-                        newCompleted[assignment.questionHash] = !allCompleted
-                      })
-                      return newCompleted
-                    }))}
-                    aria-label="Mark question completed"
-                    className="h-4 w-4 shrink-0 accent-gray-800"
-                  />
+                  {showCompletion && (
+                    <input
+                      type="checkbox"
+                      checked={completedCount === courseAssignments.length}
+                      onChange={() => setCompleted((prev => {
+                        const newCompleted = { ...prev }
+                        const allCompleted = completedCount === courseAssignments.length
+                        courseAssignments.forEach((assignment) => {
+                          newCompleted[assignment.questionHash] = !allCompleted
+                        })
+                        return newCompleted
+                      }))}
+                      aria-label="Mark question completed"
+                      className="h-4 w-4 shrink-0 accent-gray-800"
+                    />
+                  )}
                   {courseName}
                   <Badge variant="outline" className="ml-2">
                     {courseAssignments.length} questions
                   </Badge>
                 </CardTitle>
-                <Badge variant={completedCount === courseAssignments.length ? "default" : "secondary"}>
-                  {completedCount}/{courseAssignments.length} completed
-                </Badge>
+                {showCompletion && (
+                  <Badge variant={completedCount === courseAssignments.length ? "default" : "secondary"}>
+                    {completedCount}/{courseAssignments.length} completed
+                  </Badge>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -72,6 +77,7 @@ export function AssignmentList({ assignments, semester, completed, setCompleted 
                     semester={semester}
                     completed={completed}
                     setCompleted={setCompleted}
+                    showCompletion={showCompletion}
                   />
                 ))}
               </div>

@@ -4,21 +4,40 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, CheckCircle2, XCircle, Clock, Loader2 } from "lucide-react"
-import type { Assignment } from "@/lib/types"
+import { ExternalLink, Loader2, Star } from "lucide-react"
+import type { Assignment, FavoriteQuestion } from "@/lib/types"
 import { fetchWithAuth } from "@/utils/auth"
 
 interface AssignmentCardProps {
   assignment: Assignment
   semester: { hash: string; title: string } | null
   completed: Record<string, boolean>
-  setCompleted: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  setCompleted: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+  showCompletion?: boolean
 }
 
-export function AssignmentCard({ assignment, semester, completed, setCompleted}: AssignmentCardProps) {
+export function AssignmentCard({ assignment, semester, completed, setCompleted, showCompletion = true }: AssignmentCardProps) {
   const [playgroundLink, setPlaygroundLink] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
   const COMPLETED_STORAGE_KEY = "completedQuestions"
+  const FAVORITES_STORAGE_KEY = "favoriteQuestions"
+
+  const readFavorites = (): Record<string, FavoriteQuestion> => {
+    try {
+      const raw = localStorage.getItem(FAVORITES_STORAGE_KEY) || "{}"
+      const parsed = JSON.parse(raw)
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {}
+      return parsed as Record<string, FavoriteQuestion>
+    } catch {
+      return {}
+    }
+  }
+
+  useEffect(() => {
+    const favorites = readFavorites()
+    setIsFavorite(!!favorites[assignment.questionHash])
+  }, [assignment.questionHash])
 
   useEffect(() => {
     try {
@@ -29,6 +48,34 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
     } catch {
     }
   }, [assignment.questionHash, completed])
+
+  const toggleFavorite = () => {
+    const next = !isFavorite
+    const favorites = readFavorites()
+
+    if (next) {
+      favorites[assignment.questionHash] = {
+        course_hash: assignment.courseHash,
+        assignmentHash: assignment.assignmentHash,
+        assignmenstHash: assignment.assignmentHash,
+        questionHash: assignment.questionHash,
+        question_name: assignment.questionTitle,
+        difficulty: assignment.difficultyType,
+        topics: assignment.topics || [],
+        courseName: assignment.courseName,
+      }
+    } else {
+      delete favorites[assignment.questionHash]
+    }
+
+    try {
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites))
+      window.dispatchEvent(new Event("favorites-updated"))
+    } catch {
+    }
+
+    setIsFavorite(next)
+  }
 
   const getDifficultyColor = (difficulty: number) => {
     if (difficulty <= 2) {
@@ -50,7 +97,6 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
 
     setLoading(true)
     try {
-      const token = localStorage.getItem("auth-token")
       const data = await fetchWithAuth(`https://my.newtonschool.co/api/v1/course/h/${assignment.courseHash}/assignment/h/${assignment.assignmentHash}/question/h/${assignment.questionHash}/details/`,)
       if (!data.hash) {
         throw new Error("No playground link available")
@@ -81,17 +127,30 @@ export function AssignmentCard({ assignment, semester, completed, setCompleted}:
       <CardHeader className="pb-2 min-h-15">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <input
-              type="checkbox"
-              checked={completed[assignment.questionHash]}
-              onChange={() => setCompleted({ ...completed, [assignment.questionHash]: !completed[assignment.questionHash] })}
-              aria-label="Mark question completed"
-              className="h-4 w-4 shrink-0 accent-gray-800"
-            />
-            <CardTitle className={`text-sm font-medium text-foreground line-clamp-2 flex-1 ${completed[assignment.questionHash] ? "line-through" : ""}`}>
+            {showCompletion && (
+              <input
+                type="checkbox"
+                checked={completed[assignment.questionHash]}
+                onChange={() => setCompleted({ ...completed, [assignment.questionHash]: !completed[assignment.questionHash] })}
+                aria-label="Mark question completed"
+                className="h-4 w-4 shrink-0 accent-gray-800"
+              />
+            )}
+            <CardTitle className={`text-sm font-medium text-foreground line-clamp-2 flex-1 ${showCompletion && completed[assignment.questionHash] ? "line-through" : ""}`}>
               {assignment.questionTitle}
             </CardTitle>
           </div>
+          <Button
+            type="button"
+            size="icon-sm"
+            variant="ghost"
+            onClick={toggleFavorite}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            className="shrink-0"
+          >
+            <Star className={`h-4 w-4 ${isFavorite ? "fill-yellow-400 text-yellow-500" : "text-muted-foreground"}`} />
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
