@@ -30,7 +30,7 @@ const sections = [
 	},
 	{
 		name: "Favorites",
-		href: "/dashboard/favorities",
+		href: "/dashboard/favorites",
 		description: "All your favorited questions in one place",
 		icon: Star
 	},
