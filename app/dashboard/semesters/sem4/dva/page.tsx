@@ -1,186 +1,213 @@
 import SubjectDashboard from "../../common/SubjectDashboard"
+
 const topicOrder = [
   // =====================================================
-  // EXCEL / SPREADSHEET - COMPLETE FIRST
+  // SPREADSHEET / EXCEL - FOUNDATION
   // =====================================================
 
-  // Basics
   "Spreadsheet-Data Types",
   "Cell referencing",
   "Array formulas",
-  "Simple Multiply",
 
-  // Logical & Conditional Functions
-  "Logical operations",
+  // =====================================================
+  // LOGICAL & CONDITIONAL
+  // =====================================================
+
   "Spreadsheet-Logical Functions",
-  "Using Logical functions in Excel",
   "Error handling using IFERROR & IFNA",
 
-  // String & Text Handling
+  // =====================================================
+  // STRING & TEXT
+  // =====================================================
+
   "Spreadsheet - String Functions",
-  "Length Function",
   "Text to columns",
-  "Text Split",
   "Flash Fill",
-  "Fill Handle functionality in Sheets",
 
-  // Date & Time
-  "Excel Date & Time Functions",
+  // =====================================================
+  // DATE & TIME
+  // =====================================================
+
   "Spreadhsheet - Date & Time functions",
-  "Employee Hire Dates",
-  "Calculating Celebrities' Current Age",
 
-  // Lookup & Reference
+  // =====================================================
+  // LOOKUPS (VERY IMPORTANT)
+  // =====================================================
+
   "VLOOKUP Function",
   "HLOOKUP Function",
   "XLOOKUP Function",
   "INDEX() + MATCH()",
   "Combining VLOOKUP & MATCH",
 
-  // Sorting & Filtering
-  "Sorting and filtering data",
-  "Advanced Sorting",
-  "Data Filtering-Spreadsheet",
-  "Data Filtering and Sorting",
+  // =====================================================
+  // FILTERING & SORTING
+  // =====================================================
 
-  // Aggregations & Pivot Tables
-  "Aggregation functions",
+  "Data Filtering-Spreadsheet",
+
+  // =====================================================
+  // AGGREGATION & PIVOTS
+  // =====================================================
+
   "Spreadsheet - Aggregate Functions",
   "Conditional Aggregations",
   "Pivot Tables",
-  "Pivot Table Testing",
-  "AVG Count and Sum Pivot",
 
-  // Data Cleaning in Excel
+  // =====================================================
+  // DATA CLEANING (EXCEL)
+  // =====================================================
+
   "Data preparation in Spreadsheets",
-  "Data Cleaning - Removing Duplicates",
-  "Improving Data Integrity and Accuracy by Removing Duplicates",
-  "Order Priority Data Validation",
 
-  // Charts & Reporting
-  "Creating and formatting basic charts",
-  "Creating charts from orders",
-  "Line Chart Visuals",
-  "Charts and Pivot table on Orders- Online and offline",
-
-    // =====================================================
+  // =====================================================
   // VISUALIZATION & DASHBOARDING
   // =====================================================
 
-  "Visualization of Data",
+  "Creating and formatting basic charts",
   "Reporting and Dashboarding",
-  "Dashboard creation 1",
-  "HR Analytics Dashboard.",
 
-  // Course Wrap-up
+  // =====================================================
+  // COURSE WRAP
+  // =====================================================
+
   "DVA",
 
   // =====================================================
-  // NUMPY - FOUNDATION FOR PANDAS
+  // NUMPY - CORE FOUNDATION
   // =====================================================
-  
+
+  "NumPy Basics",
   "Accessing Array Elements",
+  "NumPy-Indexing & Slicing",
   "Arithmatic Operations in NumPy",
   "NumPy-Vectorized Operations",
   "NumPy-Matrix Operations",
-  "Broadcasting in NumPy",
-  "Array Reshaping and Arithmetic Operations",
-  "Matrix Manipulation",
-  "Addition and Subtraction",
 
   // =====================================================
-  // PANDAS - DATA ANALYTICS CORE
+  // PANDAS - CORE ANALYTICS
   // =====================================================
 
-  // Pandas Basics
-  "Pandas",
-  "Pandas DataFrame",
-
-  // Filtering & Sorting
-  "Data Filtering  - Pandas",
-  "Sorting Data - Pandas",
+  "Data Filtering - Pandas",
   "Handling missing values",
-  "Missing Data Handling",
-
-  // Grouping & Aggregation
-  "Groupby Operations - Pandas",
   "Data Grouping-Pandas",
   "Data Pivoting-Pandas",
-  "Data Aggregation",
   "Descriptive Statistics",
-
-  // Data Cleaning
-  "Pandas Data Cleaning",
-  "Data Type Audit in the Employee Dataset",
-  "Customer Data Cleaning",
-  "Employee Master Data Cleanup & Filtering",
-
-  // Data Transformation
-  "Data Manupulation",
-  "Advanced Data Transformation and Reshaping",
   "Join, Merge, Concat, Append (Pandas)",
-  "The Enigmatic Merge Mastery",
-  "Joining DataFrames and Summing Quantities by ID",
 
-  // Python Analytics
+  // =====================================================
+  // PYTHON ANALYTICS LAYER
+  // =====================================================
+
   "Python- Data Cleaning",
   "Python- Data Analyzing",
-  "2 Level Analysis",
-  "Salaries Categorization and Outlier Detection",
+
+  // =====================================================
+  // EDA (MOST IMPORTANT FOR INTERVIEWS)
+  // =====================================================
+
+  "Univariate Analysis",
+  "Bivariate Analysis",
+  "Multivariate Analysis",
+  "Correlation Analysis - Pandas",
+
+  // =====================================================
+  // DISTRIBUTIONS & OUTLIERS
+  // =====================================================
+
+  "Data distributions",
+  "Percentile and Quantiles",
+  "Outlier Detection",
+
+  // =====================================================
+  // VISUALIZATION (PYTHON)
+  // =====================================================
+
+  "Matplotlib & seaborn",
+  "Visualizing Univariate Categorical Data",
+  "Visualizing Univariate Numerical Data"
 ];
 
 const mustReviseKeywords = [
-  // NumPy Core
-  "Numpy array functions",
-  "Broadcasting in NumPy",
-  "Array Reshaping and Arithmetic Operations",
-  "Matrix Manipulation",
-  "Tempreature_Data",
+  // =====================================================
+  // EXCEL CORE LOGIC & LOOKUPS
+  // =====================================================
 
-  // Spreadsheet Lookup & Logic
   "Student Grades using XLOOKUP",
   "Airline Crew Dynamic Lookup",
   "Extracting EU Immigration Statistics with HLOOKUP",
   "Stationery Store Price and Category Retrieval",
   "Extracting Product Details",
   "Employee Details for Custom Emails",
+
   "Determining Student Pass/Fail Status Using IF Logic",
   "Determining Scholarship Eligibility Using IF + AND Logic",
   "Identifying Student Presence Using ISBLANK and IF Logic",
-  "Leveraging Shoe Data",
-  "Length Function",
-  "Employee Function",
-  "Advanced Sorting",
-  "Audi Diesel Price Analysis",
-  "Cleaning Product",
-  "Data Cleaning - Removing Duplicates",
-  "Customer Data Cleaning",
-  "Salaries Categorization and Outlier Detection",
 
-  // Pivot & Aggregation
+  // =====================================================
+  // DATA CLEANING (HIGH PRIORITY)
+  // =====================================================
+
+  "Data Type Audit in the Employee Dataset",
+  "Data Quality Analysis 2",
+  "Improving Data Integrity and Accuracy by Removing Duplicates",
+  "Customer Data Cleaning",
+  "Employee Master Data Cleanup & Filtering",
+  "Employee Attendance Cleanup Report",
+  "Handling Null",
+  "Missing Data Handling",
+  "Cleaning Product",
+
+  // =====================================================
+  // PIVOT & AGGREGATION
+  // =====================================================
+
   "Student Performance & Fee Summary Using Conditional Aggregation",
   "Attendance Insights & Financial Summary",
+  "Attendance-Based Department Evaluation",
   "AVG Count and Sum Pivot",
   "Pivot Table Testing",
   "Salary Aggregation",
   "Groupby and Aggregation",
 
-  // Data Cleaning
-  "Improving Data Integrity and Accuracy by Removing Duplicates",
-  "Customer Data Cleaning",
-  "Employee Master Data Cleanup & Filtering",
-  "Handling Null",
-  "Missing Data Handling",
-  "Employee Attendance Cleanup Report",
+  // =====================================================
+  // NUMPY CORE
+  // =====================================================
 
-  // Pandas Merge & Transform
+  "Numpy array functions",
+  "Broadcasting in NumPy",
+  "Array Reshaping and Arithmetic Operations",
+  "Matrix Manipulation",
+  "Addition and Subtraction",
+
+  // =====================================================
+  // PANDAS TRANSFORMATION & MERGE
+  // =====================================================
+
   "The Enigmatic Merge Mastery",
   "Joining DataFrames and Summing Quantities by ID",
   "Advanced Data Transformation and Reshaping",
   "City Sales Data Standardization",
   "Transforming Sales Data for Insights",
+  "Enhanced Customer Transaction Data Formatting",
 
-  // HR & Employee Analytics
+  // =====================================================
+  // SALES & BUSINESS ANALYTICS
+  // =====================================================
+
+  "Sales data analysis",
+  "Sales Transaction Analysis by Region and Product",
+  "Sales Data Filtering, Sorting, and Product Frequency Analysis",
+  "Branch Revenue Generation",
+  "Maximum Sales Improvement",
+  "Product Revenue Contribution Percentage per Order",
+  "Calculating Adjusted Revenue per Category",
+  "Monthly sales data for three different products",
+
+  // =====================================================
+  // HR & EMPLOYEE ANALYTICS
+  // =====================================================
+
   "HR Analytics Dataset Insights Query",
   "Frequency Count - HR Analytics",
   "HR Analytics - WorkLifeBalance",
@@ -190,31 +217,61 @@ const mustReviseKeywords = [
   "Employee Data Integration",
   "Monthly Salary Analysis",
 
-  // Sales & Business Analytics
-  "Sales data analysis",
-  "Sales Transaction Analysis by Region and Product",
-  "Sales Data Filtering, Sorting, and Product Frequency Analysis",
-  "Branch Revenue Generation",
-  "Maximum Sales Improvement",
-  "Product Revenue Contribution Percentage per Order",
-  "Calculating Adjusted Revenue per Category",
+  // =====================================================
+  // STUDENT / EDUCATION ANALYTICS
+  // =====================================================
 
-  // Academic & Student Analytics
   "Student Dataset Analysis for Educational Insights",
   "Student Performance Analysis and Top Performers Identification",
   "Analyzing Academic Performance: Subject Scores and Gender Disparities",
   "Student Placement Analysis",
 
-  // Dashboard & Visualization
+  // =====================================================
+  // VISUALIZATION & DASHBOARD
+  // =====================================================
+
   "Dashboard creation 1",
   "HR Analytics Dashboard.",
   "Visualization of Data",
   "Line Chart Visuals",
+  "Creating charts from orders",
 
-  // Advanced Case Studies
-  "Health Indicators and Outcome Analysis",
-  "Top 5 States with Most 5-Star Businesses",
+  // =====================================================
+  // EDA & STATISTICS (VERY IMPORTANT)
+  // =====================================================
+
+  "Correlation Analysis - Pandas",
+  "Sales Data Correlation Strength",
+  "Regional Purchase Correlation",
+  "Marketing Effectiveness Score",
+
+  "Univariate Analysis using Histogram",
+  "Univariate Analysis using Bar Graph",
+  "Univariate Analysis using Box Plot",
+
+  "Distribution Shape Detection Using Skewness",
+  "Compute Quartiles and 90th Percentile of Scores",
+
+  // =====================================================
+  // OUTLIER DETECTION
+  // =====================================================
+
+  "Outlier Detection Using IQR Method",
+  "Detect Outliers Using IQR Method",
+  "Remove Outliers Using IQR Method",
+  "Purchase Outlier Detection using IQR",
+
+  // =====================================================
+  // ADVANCED CASE STUDIES
+  // =====================================================
+
   "Zomato Data Analyst",
+  "Top 5 States with Most 5-Star Businesses",
+  "Health Indicators and Outcome Analysis",
+  "Retail Analytics: Bivariate Relationship Analysis",
+  "Financial Risk Analysis: Transaction Behavior Study",
+  "Hospital Recovery Pattern Analysis 1",
+  "EdTech Platform: Study Behavior & Performance Analysis",
   "Transportation Data: Routes, Vehicles, and Passengers"
 ];
 
