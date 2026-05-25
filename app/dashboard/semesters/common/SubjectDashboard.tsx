@@ -110,11 +110,16 @@ export default function SubjectDashboard({ subjectName, courseTag, excludeCourse
           if (typeof window !== "undefined") localStorage.setItem("user-courses", JSON.stringify(coursesData))
         } catch {}
       }
-      const currentCourse = coursesData.find((c: { title: string }) => c.title.includes("RU") && !c.title.includes("All Content"))
-      const semesterCourse = currentCourse.children_courses.admin_unit_courses.find((c: { title: string }) => c.title.includes(semesterTitle))
-      if (!semesterCourse) throw new Error("Could not find current semester course")
-      const semObj = { hash: semesterCourse.hash, title: semesterCourse.title }
-      console.log(semesterCourse)
+      const currentCourse = coursesData.find((c: { title?: string }) => c?.title?.includes("RU") && !c.title.includes("All Content"))
+      const semesterCourseCandidates = [
+        currentCourse?.children_courses?.admin_unit_courses,
+        currentCourse?.admin_unit_courses,
+        currentCourse?.children_courses,
+        ...coursesData.flatMap((c: any) => [c?.children_courses?.admin_unit_courses, c?.admin_unit_courses, c?.children_courses]),
+      ].find(Array.isArray) as Array<{ title?: string; hash?: string }> | undefined
+      const semesterCourse = semesterCourseCandidates?.find((c) => c?.title?.includes(semesterTitle))
+      if (!semesterCourse?.hash) throw new Error(`Could not find current semester course (${semesterTitle})`)
+      const semObj = { hash: semesterCourse.hash, title: semesterCourse.title || semesterTitle }
       setSemester(semObj)
       try {
         if (typeof window !== "undefined") localStorage.setItem("semester-info", JSON.stringify(semObj))
