@@ -26,127 +26,71 @@ const topicOrder = [
 ];
 
 const mustReviseKeywords = [
-  // NumPy & Pandas
-  "array",
-  "ndarray",
-  "vector operations",
-  "broadcasting",
-  "reshape",
-  "indexing",
-  "slicing",
-  "aggregation",
-  "boolean masking",
-  "DataFrame",
-  "Series",
-  "groupby",
-  "merge",
-  "missing values",
-  "data cleaning",
-
-  // Data Preprocessing
-  "normalization",
-  "standardization",
-  "encoding",
-  "label encoding",
-  "one hot encoding",
-  "feature scaling",
-  "train test split",
-  "imputation",
-
-  // Linear Regression
-  "simple linear regression",
-  "multiple linear regression",
-  "coefficient",
-  "intercept",
-  "gradient descent",
-  "sklearn linear regression",
-
-  // Regression Metrics
-  "MAE",
-  "MSE",
-  "RMSE",
-  "R2 score",
-
-  // Logistic Regression
-  "sigmoid",
-  "binary classification",
-  "decision boundary",
-  "probability prediction",
-
-  // Classification Metrics
-  "confusion matrix",
-  "accuracy",
-  "precision",
-  "recall",
-  "f1 score",
-  "ROC AUC",
-
-  // Decision Trees
-  "entropy",
-  "gini impurity",
-  "information gain",
-  "decision tree classifier",
-
-  // Neural Networks
-  "perceptron",
-  "activation functions",
-  "relu",
-  "sigmoid activation",
-  "tanh",
-  "softmax",
-  "forward propagation",
-  "backpropagation",
-  "loss function",
-  "gradient descent",
-  "weights and biases",
-
-  // MLP
-  "hidden layers",
-  "multi layer perceptron",
-  "PyTorch neural network",
-  "numpy neural network",
-
-  // NLP
-  "tokenization",
-  "stopwords",
-  "stemming",
-  "lemmatization",
-  "bag of words",
-  "TF-IDF",
-  "CountVectorizer",
-  "Naive Bayes",
-  "LinearSVC",
-  "n-grams",
-
-  // Embeddings & Image Models
-  "vector embeddings",
-  "semantic similarity",
-  "cosine similarity",
-  "image classification",
-
-  // Agentic AI
-  "agents",
-  "tool calling",
-  "decision making",
-  "workflow automation",
-  "evaluation agents",
-
-  // LangGraph
-  "nodes",
-  "edges",
-  "conditional routing",
-  "state management",
-
-  // Prompting
-  "zero-shot prompting",
-  "prompt evaluation",
-  "reasoning chains",
-
-  // General ML
-  "overfitting",
-  "underfitting",
-  "cross validation",
-  "bias variance tradeoff"
+  "Support triage agent",
+  "Numpy- True False Ladder",
+  "Operation on vectors",
+  "Monthly Expenses",
+  "Employee Salary Range and Department Count Analysis",
+  "Data Preprocessing Exercise",
+  "Patient Record Preprocessor",
+  "Mumbai House Price Booster",
+  "Data Preprocessing",
+  "DataPreprocessing_Diseases",
+  "Linear Regression using Sklearn",
+  "Linear Regression",
+  "House prediction using MLR",
+  "Credit card fraud Detection",
+  "Predicting the Presence of Snakes in Australia Using Logistic Regression",
+  "Tumour Malignancy Classifier",
+  "Confusion Matrix",
+  "DT Classifier",
+  "Telecom Churn Predictor",
+  "Breast Cancer Diagnosis: Feature Importance",
+  "Implementing different activation functions and their derivatives",
+  "Train a Neural Network Using PyTorch with Different Activations",
+  "Implementing a neural network from scratch using Numpy.",
+  "Multi-Layer Perceptron",
+  "Student Exam Registration",
+  "ATM Transaction Processor",
+  "Library Book Reservation",
+  "Food Delivery Order Tracker",
+  "Employee Leave Approver",
+  "E-commerce Return Processor",
+  "Hospital Appointment Scheduler",
+  "Bank Loan Application Pipeline",
+  "Inventory Reorder System",
+  "Customer Complaint Resolver",
+  "Insurance Claim Processor",
+  "Embed the Excuse",
+  "Movie Match",
+  "Roommate Compatibility Score",
+  "Spoiler or Safe?",
+  "Find the Right Meme",
+  "Lost & Found Board",
+  "Vibe Check",
+  "Odd One Out",
+  "Auto Shelf",
+  "Campus FAQ Bot",
+  "Myth Buster",
+  "Describe the Scene",
+  "Expense Approval Workflow",
+  "Leave Application Router",
+  "UPI Fraud Detector",
+  "Student Score Cross-Validator",
+  "XOR Pattern Classifier",
+  "Spiral Dataset Classifier",
+  "Spam Email Detector — NLTK + TF-IDF + Logistic Regression",
+  "Job Posting Classifier — NLP Pipeline (NLTK + TF-IDF + Naive Bayes)",
+  "News Headline Classifier — CountVectorizer vs TF-IDF + Logistic Regression",
+  "Language Detector — Character N-gram + Logistic Regression",
+  "Product Category Tagger — TF-IDF + LinearSVC",
+  "Fake News Detector — BoW + Logistic Regression",
+  "Agent Evaluator",
+  "Hello Tools",
+  "Know When Not to Act",
+  "Form Field Validator",
+  "Package Shipping Calculator",
+  "Critic in Chief"
 ];
 
 export default function Page() {
